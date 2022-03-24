@@ -52,7 +52,7 @@ app.post("/usuarios" ,urlencodedParser, function(req,res){
    mysql2.query('INSERT INTO USUARIOS (usuario,contrasenia,nombre,correo) VALUES (?,?,?,?)',[req.body.usuario,req.body.password,req.body.nombre,req.body.correo],function(err,result){
     if(err){
       return res.json({ err: err });
-conmo etras
+
 
      }else{
        console.log(result)
