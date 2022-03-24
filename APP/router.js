@@ -38,15 +38,12 @@ app.post("/sesion",urlencodedParser,function(req,res){
 
   })
 })
-
+hola a todos
 
 app.get("/home/:usuario",function(req,res){
-
+  
 res.redirect("main.html")
 })
-
-
-
 app.get("/register",function(req,res){
   res.redirect("index.html")                  
 })
