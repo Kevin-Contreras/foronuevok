@@ -53,7 +53,7 @@ app.post("/usuarios" ,urlencodedParser, function(req,res){
     if(err){
       return res.json({ err: err });
 conmo etras
-ddd
+
      }else{
        console.log(result)
      } 
