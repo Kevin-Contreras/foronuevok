@@ -3,11 +3,19 @@ var app = express.Router();
 var bodyParser = require('body-parser')
 var mysql2 = require("./datos")
 var verdadero=0;
+var usuario="";
+var errorr="";
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 app.get("/",function(req,res){
+  usuario="";
+    res.render("login",{error:""})
 
-    res.redirect("login.html")
   })
+  app.get("/sesion",function(req,res){
+    res.redirect("/")
+
+  })
+ 
 app.post("/sesion",urlencodedParser,function(req,res){
 
   mysql2.query("SELECT usuario, contrasenia FROM USUARIOS",function(err,result,fields){
@@ -18,10 +26,11 @@ app.post("/sesion",urlencodedParser,function(req,res){
     }else{
       
       for (let index = 0; index < result.length; index++) {
-       
+   
         if(result[index].usuario === req.body.usuario2 && result[index].contrasenia === req.body.contra){
-         
+         usuario = req.body.usuario2;
          verdadero=1
+         break;
         }else{
          verdadero=0;
         }
@@ -29,9 +38,12 @@ app.post("/sesion",urlencodedParser,function(req,res){
       }
       
       if(verdadero ==1){
-        res.redirect("main.html")
+        res.redirect("/home")
+        
       }else{
-        res.send("el usuario o la contraseña no estan correctas")
+        errorr="La contraseña o el Usuario no estan correctos";
+        res.render("login",{error:errorr})
+        
       }
       
     }
@@ -40,15 +52,76 @@ app.post("/sesion",urlencodedParser,function(req,res){
 })
 
 
-app.get("/home/:usuario",function(req,res){
+app.get("/home",function(req,res){
+  if(usuario == "" ){
+  
+      res.render("login",{error:""})
+    
+    
 
-res.redirect("main.html")
+  }else{
+    mysql2.query("SELECT * FROM USUARIOS WHERE usuario = '"+usuario+"'",function(err,resultUsuario,fields){
+      if(err){
+        console.log(err)
+    }else{
+      mysql2.query("SELECT * FROM USUARIOS INNER JOIN COMENTARIOS ON Identificador = indentificadorUsuario;",function(err,result,fields){
+        var datos =[];
+        var contador=0;
+        for (let index = 0; index < result.length; index++) {
+          if(result[index].usuario==usuario){
+            datos[contador]=result[index];
+            contador=contador+1;
+            
+          }
+          
+          
+        }
+        console.log(datos)
+        res.render("main",{dato:datos,usuario:resultUsuario})
+       
+      })
+     
+}
 })
 
 
 
+}
+
+
+})
+
+app.get("/perfil",function(req,res){
+ 
+  mysql2.query("SELECT * FROM USUARIOS WHERE usuario = '"+usuario+"'",function(err,result,fields){
+    if(err){
+      console.log(err)
+    }else{
+      res.render("perfil",{perfil:result})
+    }
+  })
+})
+app.post("/comentarios",urlencodedParser,function(req,res){
+var time = new Date();
+console.log(time.getDay()+"/"+time.getMonth()+"/"+time.getFullYear())
+console.log(usuario)
+mysql2.query("SELECT * FROM USUARIOS WHERE usuario = '"+usuario+"'",function(err,result,fields){
+  console.log(result[0].indentificadorUsuario)
+  mysql2.query("INSERT INTO COMENTARIOS (comentario,fecha,hora,Identificador) VALUES (?,?,?,?)",[req.body.comentario,time.getDay()+"/"+time.getMonth()+1+"/"+time.getFullYear(),time.getHours()+":"+time.getMinutes(),result[0].indentificadorUsuario],function(err,result){
+    if(err){
+      console.log(err)
+    }else{
+      console.log("se guardo el dato")
+      res.redirect("/home")
+    }
+  })
+
+})
+})
+
+
 app.get("/register",function(req,res){
-  res.redirect("index.html")                  
+  res.render("index")                  
 })
 app.post("/usuarios" ,urlencodedParser, function(req,res){
    console.log(req.body)
@@ -61,7 +134,7 @@ app.post("/usuarios" ,urlencodedParser, function(req,res){
        console.log(result)
      } 
     })
-   res.redirect("/")
+   res.render("login")
    
 })
 module.exports = app;
