@@ -52,7 +52,12 @@
         <% dato.forEach(function(datos){%>
           <div class="card pp mb-3">
             <div class="card-header text-white bg-dark">
-              TASK
+              <p class="nu">TASK </p> 
+              <form action=<%= "home/"+datos.id %>>
+                <input type="submit" value="X"  class="btn  regular-button bo bo2" />
+            </form>
+            
+            
             </div>
             <div class="card-body">
               <blockquote class="blockquote mb-0">

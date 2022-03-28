@@ -1,7 +1,8 @@
 var express = require("express");
 var app = express.Router();
 var bodyParser = require('body-parser')
-var mysql2 = require("./datos")
+var mysql2 = require("./datos");
+const { query } = require("./datos");
 var verdadero=0;
 var usuario="";
 var errorr="";
@@ -56,8 +57,6 @@ app.get("/home",function(req,res){
   if(usuario == "" ){
   
       res.render("login",{error:""})
-    
-    
 
   }else{
     mysql2.query("SELECT * FROM USUARIOS WHERE usuario = '"+usuario+"'",function(err,resultUsuario,fields){
@@ -90,7 +89,16 @@ app.get("/home",function(req,res){
 
 
 })
-
+app.get("/home/:id",function(req,res){
+  mysql2.query("DELETE FROM COMENTARIOS WHERE id="+req.params.id,function(err,result){
+    if(err){
+      console.log(err);
+    }else{
+      res.redirect("/home")     
+    }
+  })
+ 
+})
 app.get("/perfil",function(req,res){
  
   mysql2.query("SELECT * FROM USUARIOS WHERE usuario = '"+usuario+"'",function(err,result,fields){
