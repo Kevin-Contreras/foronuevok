@@ -1,5 +1,5 @@
 var express = require("express");
-var router = require("./router.js")
+var router = require("./APP/router.js")
 var app = express();
 app.use(router);
 app.use(express.static("public"))
