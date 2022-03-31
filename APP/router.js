@@ -142,7 +142,32 @@ app.post("/usuarios" ,urlencodedParser, function(req,res){
        console.log(result)
      } 
     })
-   res.render("login")
+   res.render("login",{error:""})
    
+})
+app.post("/perfil/:id",function(req,res){
+  mysql2.query("SELECT * FROM USUARIOS WHERE usuario = '"+req.params.id+"'",function(err,result,fields){
+    if(err){
+      console.log(err)
+    }else{
+      console.log(result[0].indentificadorUsuario)
+    mysql2.query("DELETE FROM COMENTARIOS WHERE Identificador="+result[0].indentificadorUsuario,function(err,result){
+      if(err){
+        console.log(err)
+      }else{
+        mysql2.query("DELETE FROM USUARIOS WHERE usuario='"+req.params.id+"'",function(err,result){
+          if(err){
+            console.log(err)
+          }else{
+            console.log(result)
+            console.log("se ha elimindado el usuario y las tareas exitosamente")
+            res.render("login",{error:""})
+          }
+        })
+      }
+    })
+    }
+   
+  })
 })
 module.exports = app;

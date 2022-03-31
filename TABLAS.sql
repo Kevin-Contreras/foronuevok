@@ -1,4 +1,4 @@
-USE PROYECTO;
+USE id18705713_proyecto;
 CREATE TABLE USUARIOS(
     indentificadorUsuario int NOT NULL AUTO_INCREMENT,
     usuario VARCHAR(100),
